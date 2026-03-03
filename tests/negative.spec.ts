@@ -84,9 +84,12 @@ test('TC-AI-001: [AI Healer Demo] cart badge shows count 1 after adding one item
   // This click triggers the badge render — the step where locator drift surfaces
   await page.getByTestId('add-to-cart-sauce-labs-fleece-jacket').click();
 
-  // Intentional drift simulation: assume badge id renamed
-  await expect(page.getByTestId('cart-count')).toBeVisible();
-  await expect(page.getByTestId('cart-count')).toHaveText('1');
+  // HEALER FIX: 'cart-count' does not exist on SauceDemo; actual attribute is
+  // 'shopping-cart-badge'. Replaced with resilient chained locator (priority-a):
+  //   page.getByTestId('shopping-cart-link').getByText('1')
+  // This anchors to the stable parent cart-link and finds the numeric badge child.
+  await expect(page.getByTestId('shopping-cart-link').getByText('1')).toBeVisible();
+  await expect(page.getByTestId('shopping-cart-link').getByText('1')).toHaveText('1');
 
   // Confirm the item's own button flipped to Remove (secondary evidence)
   await expect(page.getByTestId('remove-sauce-labs-fleece-jacket')).toBeVisible();
