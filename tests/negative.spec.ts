@@ -84,9 +84,9 @@ test('TC-AI-001: [AI Healer Demo] cart badge shows count 1 after adding one item
   // This click triggers the badge render — the step where locator drift surfaces
   await page.getByTestId('add-to-cart-sauce-labs-fleece-jacket').click();
 
-  // Primary assertions: healer target if shopping-cart-badge attribute drifts
-  await expect(page.getByTestId('shopping-cart-badge')).toBeVisible();
-  await expect(page.getByTestId('shopping-cart-badge')).toHaveText('1');
+  // Intentional drift simulation: assume badge id renamed
+  await expect(page.getByTestId('cart-count')).toBeVisible();
+  await expect(page.getByTestId('cart-count')).toHaveText('1');
 
   // Confirm the item's own button flipped to Remove (secondary evidence)
   await expect(page.getByTestId('remove-sauce-labs-fleece-jacket')).toBeVisible();
