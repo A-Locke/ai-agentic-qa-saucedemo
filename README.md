@@ -18,7 +18,7 @@ stabilized, and prepared for self-healing workflows.
 
 # System Under Test
 
-**Application:** https://www.saucedemo.com\
+**Application:** https://www.saucedemo.com
 **Scope Covered:**
 
 -   Authentication (login / locked-out user)
