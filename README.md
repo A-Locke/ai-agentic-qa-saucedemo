@@ -1,6 +1,9 @@
 # AI-Augmented QA Automation --- SauceDemo
 
-**Claude Code + Playwright MCP (Planner / Generator / Healer-ready)**
+**Claude Code + Playwright MCP (Planner / Generator / Healer +
+CLI-ready)**
+
+------------------------------------------------------------------------
 
 ## Overview
 
@@ -10,15 +13,17 @@ This project demonstrates an AI-augmented QA workflow using:
 -   **Claude Code**
 -   **SauceDemo** as the system under test
 
-The goal is to show how requirements can be converted into a structured
-test plan, automatically generated into a Playwright test suite,
-stabilized, and prepared for self-healing workflows.
+The objective is to show how requirements can be transformed into a
+structured test plan, automatically generated into a deterministic
+Playwright suite, stabilized through debugging, and extended toward
+self-healing and CLI-driven execution workflows.
 
 ------------------------------------------------------------------------
 
 # System Under Test
 
 **Application:** https://www.saucedemo.com
+
 **Scope Covered:**
 
 -   Authentication (login / locked-out user)
@@ -34,10 +39,13 @@ stabilized, and prepared for self-healing workflows.
 
 ## 1️⃣ Planner Agent
 
-Using the Playwright **Planner**, we converted a PRD into a structured,
+The Playwright **Planner** converted a PRD into a structured,
 generator-ready test plan.
 
-Artifacts: - `prd/saucedemo_prd.md` - `test-plans/saucedemo_plan.md`
+Artifacts:
+
+-   `prd/saucedemo_prd.md`
+-   `test-plans/saucedemo_plan.md`
 
 The plan includes:
 
@@ -48,14 +56,13 @@ The plan includes:
 -   Boundary and negative scenarios
 -   AI Healer simulation annotation
 
-Total planned test cases: **10**
+**Total planned test cases: 10**
 
 ------------------------------------------------------------------------
 
 ## 2️⃣ Generator Agent
 
-The **Generator** converted the test plan into Playwright TypeScript
-specs:
+The **Generator** transformed the plan into Playwright TypeScript specs:
 
     tests/auth.spec.ts
     tests/inventory.spec.ts
@@ -63,33 +70,31 @@ specs:
     tests/checkout.spec.ts
     tests/negative.spec.ts
 
-Implementation choices:
+Implementation decisions:
 
 -   `getByTestId()` aligned to SauceDemo's `data-test` attributes
 -   No brittle CSS or positional selectors
--   Independent tests (no shared state)
--   Event-driven waits (`expect()` used for synchronization)
+-   Independent tests (no shared browser state)
+-   Event-driven synchronization (`expect()` instead of sleeps)
 -   `not.toBeAttached()` for singleton absence checks
 -   `toHaveCount(0)` for collection absence checks
--   Trace + screenshot on failure configured
+-   Trace + screenshot on failure enabled
 
 ------------------------------------------------------------------------
 
-## 3️⃣ Initial Test Run & Failures
+## 3️⃣ Initial Test Run & Debugging
 
-After generation, the first run revealed two key issues.
+The first generated run surfaced two real-world issues.
 
-### Issue #1 --- `getByTestId()` Not Finding Elements
+### Issue #1 --- `getByTestId()` Could Not Find Elements
 
 **Problem:**\
-Tests failed at login --- Playwright could not find `login-button`.
+Login tests failed --- Playwright could not locate `login-button`.
 
 **Root Cause:**\
 SauceDemo uses `data-test`, while Playwright defaults to `data-testid`.
 
-**Fix:**
-
-Configured Playwright to use the correct attribute:
+**Resolution:**
 
 ``` ts
 // playwright.config.ts
@@ -100,26 +105,26 @@ export default defineConfig({
 });
 ```
 
-This aligned locator strategy with the application under test.
+This aligned the locator strategy with the application under test.
 
 ------------------------------------------------------------------------
 
 ### Issue #2 --- Currency Formatting Assertion Too Strict
 
 **Problem:**\
-Test expected:
+The test expected:
 
     Item total: $0.00
 
-Actual rendered value:
+But the UI rendered:
 
     Item total: $0
 
 **Root Cause:**\
-Formatting differences between UI totals (`$0` vs `$0.00`).
+Formatting differences in currency display (`$0` vs `$0.00`).
 
-**Fix:**\
-Replaced brittle exact-text assertion with regex:
+**Resolution:**\
+Replaced brittle exact-text assertion with a resilient regex:
 
 ``` ts
 await expect(
@@ -127,7 +132,7 @@ await expect(
 ).toBeVisible();
 ```
 
-This preserves intent while tolerating formatting variation.
+This preserves validation intent while tolerating formatting variance.
 
 ------------------------------------------------------------------------
 
@@ -137,8 +142,28 @@ After fixes:
 
     39 / 39 tests passing
 
-This establishes a stable automation baseline before introducing
-simulated drift for Healer validation.
+This commit establishes the stable automation baseline on `main`.
+
+------------------------------------------------------------------------
+
+## 5️⃣ Healer Demonstration (Branch-Based)
+
+A simulated selector drift scenario was introduced and repaired using
+the Playwright **Healer** agent.
+
+Branch:
+
+    demo/healer-selector-drift
+
+This branch contains:
+
+-   An intentional locator break
+-   A failing test state
+-   An AI-assisted repair commit
+-   Restored green execution
+
+This demonstrates automated maintenance in response to UI drift while
+keeping `main` stable.
 
 ------------------------------------------------------------------------
 
@@ -148,32 +173,50 @@ Priority order:
 
 1.  `getByTestId()` (configured for `data-test`)
 2.  `getByRole()` for semantic controls
-3.  `getByLabel()` for form fields
-4.  `getByText()` for visible assertions only
+3.  `getByLabel()` for form inputs
+4.  `getByText()` for assertion-only evidence
 
-Forbidden:
+Design principles:
 
--   `nth-child`
--   Deep CSS chains
--   XPath (unless unavoidable)
+-   No positional selectors (`nth-child`)
+-   No brittle CSS chains
+-   No XPath unless unavoidable
+-   Event-driven waits (`expect`) over time-based sleeps
+-   Assertions validate user-visible evidence (URL, headings, banner
+    text, badge counts)
 
 ------------------------------------------------------------------------
 
 # What This Demonstrates
 
--   Requirements → Structured test plan via AI
--   Plan → Deterministic Playwright suite generation
--   Real-world debugging of:
-    -   Locator configuration mismatch
+-   PRD → structured test plan via AI
+-   Plan → deterministic Playwright suite generation
+-   Real-world debugging:
+    -   Test ID configuration mismatch
     -   Assertion brittleness
--   Clean, stable, event-driven automation
--   Foundation ready for AI-driven healing workflows
+-   Clean, maintainable locator strategy
+-   Simulated UI drift + automated repair
+-   Version-controlled agentic QA workflow
 
 ------------------------------------------------------------------------
 
-# Next Steps
+# Upcoming Phase: CLI Skill Playbooks
 
--   Simulate selector drift
--   Invoke Playwright Healer agent
--   Capture before/after diff
--   Demonstrate automated maintenance repair
+The next phase extends beyond generated test code.
+
+Planned enhancements:
+
+-   Convert passing Playwright specs into **Playwright CLI skill
+    procedures**
+-   Create `procedures/*.md` playbooks for agent-driven execution
+-   Capture CLI transcripts, snapshots, and trace artifacts
+-   Demonstrate deterministic browser control via predefined CLI skills
+
+This layer will showcase:
+
+-   Agent-operable automation workflows
+-   Reproducible browser sessions
+-   Structured procedural execution
+-   Integration of planning, generation, healing, and runtime execution
+
+------------------------------------------------------------------------
