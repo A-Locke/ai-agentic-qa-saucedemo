@@ -177,3 +177,6 @@ Forbidden:
 -   Invoke Playwright Healer agent
 -   Capture before/after diff
 -   Demonstrate automated maintenance repair
+
+
+Detailed maintenance walkthrough available in `docs/healer-demo.md`.
