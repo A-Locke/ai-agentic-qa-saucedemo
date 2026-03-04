@@ -20,6 +20,12 @@ self-healing and CLI-driven execution workflows.
 
 ------------------------------------------------------------------------
 
+## Architecture
+
+PRD → Planner → Test Plan → Generator → Playwright Suite → Execution → Healer → Repair
+
+------------------------------------------------------------------------
+
 # System Under Test
 
 **Application:** https://www.saucedemo.com
