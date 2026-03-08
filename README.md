@@ -119,6 +119,9 @@ Two real-world issues surfaced and resolved on the first generated run:
 ### 4. Healer Demo — Simulated Selector Drift
 
 Branch `demo/healer-selector-drift` demonstrates an intentional locator break, a failing test state, and an AI-assisted repair — restoring green execution while keeping `main` stable.
+Full walkthrough available here:
+
+https://github.com/A-Locke/ai-agentic-qa-saucedemo/blob/demo/healer-selector-drift/docs/HEALER_DEMO.md
 
 ---
 
