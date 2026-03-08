@@ -10,3 +10,9 @@ trace.zip
 *.zip
 *.log
 .env
+# =========================================
+# Playwright CLI runtime artifacts
+# =========================================
+.playwright-cli/
+playwright-report/
+test-results/
